@@ -1,0 +1,1 @@
+# NextJS_INMN4-hybryda-_PA1.1
