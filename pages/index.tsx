@@ -17,16 +17,25 @@ export default function Page({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
-    <div>
+    <div className='container'>
       <h1>Todo list</h1>
-      <Link href="/task/create">Add Task</Link>
+      <Link className ="create-task-button" href="/task/create">Add task</Link>
       <ul className="task-list">
-          {tasks.map(({id, text}) => (
+          {tasks.map((task) => (
             <li className="task-item">
-              <span className="task-desc">{text}</span>
+              <div className="done-column">
+                <input
+                  type="checkbox"
+                  checked={task.done}
+                  onChange={() => handleDone(task)}
+                />
+              </div>
+              <div className="text-column">
+                <span className="task-desc">{task.text}</span>
+              </div>
               <div className="task-buttons">
-                  <Link href={{pathname: `/task/${id}/edit`, query: { currentText: text } }} className="edit-button">Edit</Link>
-                  <button onClick={() => handleDeleteTask(id as number)} className="delete-button">Delete</button>
+                  <Link href={{pathname: `/task/${task.id}/edit`, query: { currentText: task.text } }} className="edit-button">Edit</Link>
+                  <button onClick={() => handleDeleteTask(task)} className="delete-button">Delete</button>
               </div>
             </li>
           ))}
@@ -37,9 +46,21 @@ export default function Page({
 }
 
 
-async function handleDeleteTask(id: number) {
-  const response = await fetch(`http://localhost:3001/tasks/${id}`, {
+async function handleDeleteTask(task: Task) {
+  const response = await fetch(`http://localhost:3001/tasks/${task.id}`, {
     method: 'DELETE'
+  });
+  Router.push('/')
+}
+
+async function handleDone(task: Task) {
+  task.done = !task.done;
+  const response = await fetch(`http://localhost:3001/tasks/${task.id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(task)
   });
   Router.push('/')
 }

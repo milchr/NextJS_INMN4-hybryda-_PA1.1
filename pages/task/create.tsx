@@ -8,7 +8,7 @@ export default function Create() {
         event.preventDefault()
     
         const formData = new FormData(event.currentTarget)
-        let text = formData.get("text") as string;  
+        let text = formData.get("text") as string; 
         const response = await fetch(`http://localhost:3001/tasks`, {
             method: 'POST',
             headers: {
@@ -21,9 +21,12 @@ export default function Create() {
       }
      
       return (
-        <form onSubmit={onSubmit}>
-          <input type="text" name="text" />
-          <button type="submit">Submit</button>
-        </form>
+        <div className="container">
+          <form className="edit-form" onSubmit={onSubmit}>
+            <label htmlFor="text">Task description</label>
+            <input type="text" name="text" />
+            <button type="submit">Create</button>
+          </form>
+        </div>
       )
 }
